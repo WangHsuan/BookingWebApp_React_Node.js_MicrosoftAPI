@@ -1,6 +1,6 @@
 import React from 'react';
-import {format,addDays,startOfWeek,addWeeks,subWeeks, startOfDay,addMinutes,addMonths,subMonths,startOfMonth,endOfMonth,endOfWeek,isSameMonth,isSameDay,parse} from 'date-fns';
-import "./calendar.css";
+import {format,addDays,startOfWeek,addWeeks,subWeeks,addMinutes} from 'date-fns';
+import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 
 class Calendar extends  React.Component{
@@ -10,6 +10,7 @@ class Calendar extends  React.Component{
             currentMonth: new Date(),
             selectedDate: new Date(),
             fetchday:[],
+            subject:'IFN 701 Project'
         };
     }
     componentDidMount(){
@@ -44,7 +45,7 @@ class Calendar extends  React.Component{
         const days = [];
         let startDate = startOfWeek(this.state.currentMonth);       
           for (let i = 1; i < 6; i++) {
-            if(i == 0){
+            if(i === 0){
               //第一排
               days.push(
                 <div key={format(addDays(startDate, i), "MM-dd")} >
@@ -58,7 +59,7 @@ class Calendar extends  React.Component{
             else{
               days.push(
                 <div key={format(addDays(startDate, i), "MM-dd")} >
-                <div className="col col-center title" key={i}>
+                <div className="title " key={i}>
                   {format(addDays(startDate, i), dateFormat)}
                 </div>
                 
@@ -91,20 +92,33 @@ class Calendar extends  React.Component{
       }
 
     renderClass = day =>{
+
+      //click Time---------------------
+      const clickMonth = day.slice(0,2);
+      const clickDay = day.slice(3,5);
+      const clickTime = day.slice(6,8);
+      //current Time-------------------
+      const dateFormat = "MM-dd kk:mm";
+      const currentDate = format(new Date(), dateFormat);
+      const currentMonth = currentDate.slice(0,2)
+      const currentDay = currentDate.slice(3,5)
+      const currentTime = currentDate.slice(6,8)
+
       let stringClass = `calendar body cell `;
-      if(day == this.state.selectedDate){
+      if(day === this.state.selectedDate){
         stringClass += "selected";
       }
 
       const reg = /[a-zA-Z]/g;
       
-      this.state.fetchday.map(date =>{
-        console.log(date.Start.slice(6,date.Start.length-1).replace(reg," "))
-        console.log("---------")
-        console.log(day)
+      this.state.fetchday.map(date =>{        
         if(day=== date.Start.slice(6,date.Start.length-1).replace(reg," ")){
           stringClass += ` selected`;
-        }}
+        }
+        if((clickMonth === currentMonth)&&(clickDay === currentDay)&&(clickTime<=currentTime)){
+          stringClass = `calendar body cell unavailable`;
+        }
+      }
       )
         
 
@@ -113,17 +127,48 @@ class Calendar extends  React.Component{
     
 
     onDateClick = day => {
+      //click Time---------------------
+      const clickMonth = day.slice(0,2);
+      const clickDay = day.slice(3,5);
+      const clickTime = day.slice(6,8);
+      //current Time-------------------
+      const dateFormat = "MM-dd kk:mm";
+      const currentDate = format(new Date(), dateFormat);
+      const currentMonth = currentDate.slice(0,2)
+      const currentDay = currentDate.slice(3,5)
+      const currentTime = currentDate.slice(6,8)
+      const className = document.getElementById(day).className;
+
+      //if timeSlot is red, it will alert plz choose another day
+      if(className === "calendar body cell  selected" ){
+        alert('Please choose another day');
+        this.setState({selectedDate: ''});
+      }else{
+        //if time is past, it will alert plz choose another day
+        if((clickMonth === currentMonth)&&(clickDay === currentDay)&&(clickTime<=currentTime)){
+          this.setState({selectedDate: ''});
+          alert('Please choose another day')
+        }
+       
+        if((clickMonth <= currentMonth)&&(clickDay < currentDay)){
+          this.setState({selectedDate: ''});
+          alert('Please choose another day')
+        }
+        else if((clickMonth < currentMonth)){
+          this.setState({selectedDate: ''});
+          alert('Please choose another day')}
+      }
+
         this.setState({
             selectedDate: day
           });
           //重複點兩次
-          if(day == this.state.selectedDate){
+          if(day === this.state.selectedDate){
             this.setState({
               selectedDate:""
             })
           }
-          console.log(this.state.fetchday)
-        
+         
     }
     nextWeek = () => {
         this.setState({
@@ -137,12 +182,81 @@ class Calendar extends  React.Component{
         });
       };
 
+    handleSubmit = e =>{
+      e.preventDefault();
+      const selectedDate = this.state.selectedDate;
+      const studentEmail = e.target.elements.studnetEmail.value;
+      const studentNumber = e.target.elements.studentNumber.value;
+      const studentContent = e.target.elements.content.value;
+      const studentSubject = this.state.subject;
+
+      var postData = JSON.stringify({'content':{
+        Studnet_Email: studentEmail,
+        Studnt_Number: studentNumber,
+        Topic: studentSubject,
+        Content:studentContent,
+        Time:selectedDate,
+        }});
+
+        //post to node.js
+        fetch('api/postEvents',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+          },
+          body:postData,
+          })
+          .then(res => res.json())
+          .then(function (data) {
+            console.log('Request succeeded with JSON response', data);
+            window.location.reload(false);
+
+          })
+          .catch(function (error) {
+            console.log('Request failed', error);
+          });
+      
+    }
+
+    handleChange = (event) =>{
+      this.setState({subject:event.target.value})
+    }
+
     render(){
         return(
         <div className="calendar">
             {this.renderHeader()}
             {this.renderDays()}
-            
+        <div className="form">
+          <h3 className='bookingInformation'>Booking Detail</h3>
+          <Form onSubmit={this.handleSubmit} style={{'margin':'20px'}} className='formStyle'>
+          <FormGroup>
+            <Label for="exampleEmail">Student Email: </Label>
+            <Input type="email" name="studnetEmail" id="exampleEmail" placeholder="Student Email..." />
+            <span className='Alert' id = 'emailAlert'></span>
+          </FormGroup>
+          <FormGroup>
+            <Label for="examplePassword">Student Number: </Label>
+            <Input type="text" name="studentNumber" id="examplePassword" placeholder="Student Number..." />
+          </FormGroup>
+          <FormGroup>
+          <Label className='selectTag'>Subject: </Label>
+          <select value={this.state.value} onChange={this.handleChange}>
+            <option value="IFN 701 Project">IFN 701 Project</option>
+            <option value="IFN 680 AI">IFN 680 AI</option>
+            <option value="IFN 647 Information Retrieveal">IFN 647 Information Retrieveal</option>
+          </select>
+          </FormGroup>
+          
+          <FormGroup>
+            <Label for="exampleText">Description</Label>
+            <Input type="textarea" name="content" id="exampleText" />
+          </FormGroup>
+          <FormGroup>
+          <Button >Submit</Button>
+          </FormGroup>
+        </Form>
+      </div>
         </div>)
     }
 }

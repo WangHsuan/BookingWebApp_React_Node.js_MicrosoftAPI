@@ -25,9 +25,9 @@
 :root {
   --main-color: #1a8fff;
   --text-color: #777;
-  --text-color-light: #ccc;
+  --text-color-light:  #f9f9f9;
   --border-color: #eee;
-  --bg-color: #f9f9f9;
+  --bg-color:  #fff;
   --neutral-color: #fff;
 }
 
@@ -112,14 +112,21 @@ main {
 }
 
 .title{
+  display: block;
+  position: relative;
+  width: 100%;
   background: var(--neutral-color);
+  padding-left:20%;
+  height: 2em;
   margin-left: 5em;
-  color:black;
+  font-size:15px;
+  font-weight:bold;
 }
 
 div.days.row{
-  height:50%;
-  width:60%;
+  
+  height:300px;
+  width:800px;
   margin:0 auto;
 }
 
@@ -130,7 +137,7 @@ div.days.row{
   position: relative;
   width: 100%;
   background: var(--neutral-color);
-  border: 1px solid var(--border-color);
+ 
 }
 
 .calendar .header {
@@ -163,46 +170,40 @@ div.days.row{
 .calendar .days {
   text-transform: uppercase;
   font-weight: 400;
-  color: var(--text-color-light);
+ 
   font-size: 70%;
   padding: .75em 0;
-  border-bottom: 1px solid var(--border-color);
+  
 }
 
 .calendar.body.cell {
   padding-left:37%;
   height: 2em;
   border-right: 1px solid var(--border-color);
-  overflow: hidden;
-  cursor: pointer;
-  background: var(--neutral-color);
-  transition: 0.25s ease-out;
   margin-left: 5em;
+  font-size:15px;
+  border: 1px solid var(--border-color);
+  
 }
 
 .calendar.body.cell:hover {
-  background: red;
+  background:#40bfc1;
   transition: 0.5s ease-out;
 }
 
+.calendar.body.cell.unavailable{
+  background: #f5f0e3;
+}
 
 .calendar.body.cell.selected {
-  border-left: 10px solid transparent;
-  border-image-slice: 1;
-  background: red;
+  background:#f0134d;
 }
 
 .calendar .body .row {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid black;
 }
 
-.calendar .body .row:last-child {
-  border-bottom: none;
-}
 
-.calendar .body .cell:last-child {
-  border-right: none;
-}
 
 .calendar .body .cell .number {
   position: absolute;
@@ -214,7 +215,7 @@ div.days.row{
 }
 
 .calendar .body .disabled {
-  color: var(--text-color-light);
+  color: black;
   pointer-events: none;
 }
 
@@ -240,4 +241,29 @@ div.days.row{
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
+}
+.bookingInformation{
+  font-size: 30px;
+  margin: 0 auto;
+  padding-left: 30%;
+}
+
+.form-group{
+ position: relative;
+padding-left:20%;
+font-size: 20px;
+margin:5px;
+}
+.form-control{
+  padding-left:20%;
+font-size: 20px;
+margin:5px;
+}
+.form{
+  position: absolute;
+  top:650px;
+  left:40%;
+  width:30%;
+  margin:0 auto;
+
 }
