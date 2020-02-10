@@ -1,5 +1,5 @@
 import React from 'react';
-import {format,addDays,startOfWeek,addWeeks,subWeeks,addMinutes} from 'date-fns';
+import {format,addDays,startOfWeek,addWeeks,subWeeks,addMinutes,isPast,parseISO} from 'date-fns';
 import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 
@@ -10,7 +10,8 @@ class Calendar extends  React.Component{
             currentMonth: new Date(),
             selectedDate: new Date(),
             fetchday:[],
-            subject:'IFN 701 Project'
+            subject:'IFN 701 Project',
+            addMinutesDate:new Date(2020, 1, 10, 9, 0),
         };
     }
     componentDidMount(){
@@ -63,7 +64,7 @@ class Calendar extends  React.Component{
                   {format(addDays(startDate, i), dateFormat)}
                 </div>
                 
-                {this.renderCells(format(addDays(startDate, i), "MM-dd"))}
+                {this.renderCells(format(addDays(startDate, i), "MM-dd kk:mm"))}
                
                 </div>                
               );
@@ -73,37 +74,26 @@ class Calendar extends  React.Component{
         return <div className="days row">{days}</div>;
     }
     renderCells(current_day) {      
-      const timeFormat = 'kk:mm'
+      const timeFormat = 'MM-dd kk:mm';
       let minutes = 0;
-      let time=[];
-      
+      let time=[];      
       for(let i=0;i<17;i++){
+        //---------------------------------------------------------------------------------------------------------------------------
+        let currentTime = format(addMinutes(new Date(2020,current_day.slice(1,2)-1,current_day.slice(3,5),9,0), minutes), timeFormat);
         //從早上九點開始
-        const currentTime = format(addMinutes(new Date(2019, 1, 1, 9, 0), minutes), timeFormat);
-        time.push(<div  className={this.renderClass(`${current_day} ${currentTime}`)}
-        key={`${current_day} ${currentTime}`} id={`${current_day} ${currentTime}`} onClick={() => {this.onDateClick(`${current_day} ${currentTime}`); }}>             
-              {currentTime}              
+        time.push(<div  className={this.renderClass(currentTime)}
+        key={currentTime} id={currentTime} onClick={() => {this.onDateClick(currentTime); }}>             
+              {currentTime.slice(6,11)}                     
        </div>);
       //Time Slot
-      minutes+=30;
+      minutes+=30;     
       }
       
       return time
       }
 
     renderClass = day =>{
-
-      //click Time---------------------
-      const clickMonth = day.slice(0,2);
-      const clickDay = day.slice(3,5);
-      const clickTime = day.slice(6,8);
-      //current Time-------------------
-      const dateFormat = "MM-dd kk:mm";
-      const currentDate = format(new Date(), dateFormat);
-      const currentMonth = currentDate.slice(0,2)
-      const currentDay = currentDate.slice(3,5)
-      const currentTime = currentDate.slice(6,8)
-
+      let dateFormate = `2020-${day.slice(0,2)}-${day.slice(3,5)}T${day.slice(6,8)}:${day.slice(9,11)}`;
       let stringClass = `calendar body cell `;
       if(day === this.state.selectedDate){
         stringClass += "selected";
@@ -111,11 +101,13 @@ class Calendar extends  React.Component{
 
       const reg = /[a-zA-Z]/g;
       
-      this.state.fetchday.map(date =>{        
-        if(day=== date.Start.slice(6,date.Start.length-1).replace(reg," ")){
+      this.state.fetchday.map(date =>{  
+        //console.log(date.Start)
+        if(day == date.Start.slice(6,date.Start.length-1).replace(reg," ")){
           stringClass += ` selected`;
         }
-        if((clickMonth === currentMonth)&&(clickDay === currentDay)&&(clickTime<=currentTime)){
+        //PastTime
+        if(isPast(parseISO(dateFormate))){
           stringClass = `calendar body cell unavailable`;
         }
       }
@@ -127,38 +119,19 @@ class Calendar extends  React.Component{
     
 
     onDateClick = day => {
-      //click Time---------------------
-      const clickMonth = day.slice(0,2);
-      const clickDay = day.slice(3,5);
-      const clickTime = day.slice(6,8);
-      //current Time-------------------
-      const dateFormat = "MM-dd kk:mm";
-      const currentDate = format(new Date(), dateFormat);
-      const currentMonth = currentDate.slice(0,2)
-      const currentDay = currentDate.slice(3,5)
-      const currentTime = currentDate.slice(6,8)
+      
+      let dateFormate = `2020-${day.slice(0,2)}-${day.slice(3,5)}T${day.slice(6,8)}:${day.slice(9,11)}`;
+      console.log(parseISO(dateFormate))
+      console.log(isPast(parseISO(dateFormate)))
+     
       const className = document.getElementById(day).className;
-
+      console.log(className)
       //if timeSlot is red, it will alert plz choose another day
-      if(className === "calendar body cell  selected" ){
+      if(className === "calendar body cell  selected" || className === `calendar body cell unavailable`){
         alert('Please choose another day');
         this.setState({selectedDate: ''});
-      }else{
-        //if time is past, it will alert plz choose another day
-        if((clickMonth === currentMonth)&&(clickDay === currentDay)&&(clickTime<=currentTime)){
-          this.setState({selectedDate: ''});
-          alert('Please choose another day')
-        }
-       
-        if((clickMonth <= currentMonth)&&(clickDay < currentDay)){
-          this.setState({selectedDate: ''});
-          alert('Please choose another day')
-        }
-        else if((clickMonth < currentMonth)){
-          this.setState({selectedDate: ''});
-          alert('Please choose another day')}
       }
-
+     
         this.setState({
             selectedDate: day
           });
@@ -168,6 +141,7 @@ class Calendar extends  React.Component{
               selectedDate:""
             })
           }
+          
          
     }
     nextWeek = () => {
