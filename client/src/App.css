@@ -114,20 +114,18 @@ main {
 .title{
   display: block;
   position: relative;
+  top:35px;
   width: 100%;
   background: var(--neutral-color);
-  padding-left:20%;
-  height: 2em;
+  padding-left:23%;
   margin-left: 5em;
   font-size:15px;
   font-weight:bold;
 }
 
 div.days.row{
-  
-  height:300px;
-  width:800px;
   margin:0 auto;
+  width:800px;
 }
 
 /* Calendar */
@@ -135,6 +133,7 @@ div.days.row{
 .calendar {
   display: block;
   position: relative;
+  top:50px;
   width: 100%;
   background: var(--neutral-color);
  
@@ -261,7 +260,7 @@ margin:5px;
 }
 .form{
   position: absolute;
-  top:650px;
+  top:700px;
   left:40%;
   width:30%;
   margin:0 auto;

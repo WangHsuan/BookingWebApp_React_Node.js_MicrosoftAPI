@@ -22,8 +22,19 @@ fireData.ref('todos').once('value', function(snapshot){
 //write
 fireData.ref('todos').set({'title':'welcome to real world'})
 .then(fireData.ref('todos').once('value', function(snapshot){
-    console.log(snapshot.val());
+    //console.log(snapshot.val());
 }))
+
+//Seed
+
+// fireData.ref('businessTime').set({'monday':{Start:`09:00`,End:`17:00`},'tuesday':{Start:`09:00`,End:`17:00`},'wednesday':{Start:`09:00`,End:`17:00`},'thursday':{Start:`09:00`,End:`17:00`},'friday':{Start:`09:00`,End:`17:00`}})
+// .then( 
+//     fireData.ref('businessTime').once('value',function(snapshot){
+//       //console.log(snapshot.val());
+//     })
+//   )
+//update
+
 //-------------------------------------
 
 // 增加 body 解析
@@ -152,8 +163,30 @@ app.post('/api/postEvents',(req,res)=>{
    } ) // expecting a json response
 
 })
-   
 
+//Get Business Time From Supervisor-----------------
+app.post('/api/getBusinessTime',(req,res)=>{
+    let business_time = req.body.business_time;
+    console.log(business_time )
+    var businessTimeFormate ={'Mon':{Start:business_time['Start'][0],End:business_time['End'][0]},'Tue':{Start:business_time['Start'][1],End:business_time['End'][1]},'Wed':{Start:business_time['Start'][2],End:business_time['End'][2]},'Thr':{Start:business_time['Start'][3],End:business_time['End'][3]},'Fri':{Start:business_time['Start'][4],End:business_time['End'][4]}};
+    
+    fireData.ref('businessTime').set(business_time)
+    .then( 
+        fireData.ref('businessTime').once('value',function(snapshot){
+        //console.log(snapshot.val());
+    })
+    )
+    res.json(businessTimeFormate)
+  })
+
+app.get('/api/Time',(req,res)=>{
+
+    fireData.ref('businessTime').once('value', function(snapshot){
+        console.log(typeof(snapshot.val()));
+        res.json(snapshot.val());
+    })
+
+    })
 
 const port = 5000;
 

@@ -1,0 +1,21 @@
+
+.LoginFormStyle{
+    position: relative;
+    top: 100px;
+    margin: 0 auto;
+    width:500px;
+    height: 300px;
+    background:#f5f0e3;
+}
+
+.formGroup{
+    padding:10px;
+    text-align: center;
+}
+input{
+    width:300px;
+}
+button{
+    margin-left:40%;
+    font-size: 20px;
+}

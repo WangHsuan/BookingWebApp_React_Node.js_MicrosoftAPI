@@ -1,5 +1,5 @@
 import React from 'react';
-import {format,addDays,startOfWeek,addWeeks,subWeeks,addMinutes,isPast,parseISO} from 'date-fns';
+import {format,addDays,startOfWeek,addWeeks,subWeeks,addMinutes,isPast,parseISO, isWithinInterval} from 'date-fns';
 import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 
@@ -12,6 +12,7 @@ class Calendar extends  React.Component{
             fetchday:[],
             subject:'IFN 701 Project',
             addMinutesDate:new Date(2020, 1, 10, 9, 0),
+            supervisorTime: {}
         };
     }
     componentDidMount(){
@@ -19,6 +20,10 @@ class Calendar extends  React.Component{
       .then(res => res.json())
       .then(fetchday => 
         this.setState({fetchday}))
+
+      fetch('api/Time')
+      .then(res => res.json())
+      .then(data => this.setState({supervisorTime:data}))
     }
 
     renderHeader(){
@@ -74,7 +79,7 @@ class Calendar extends  React.Component{
         return <div className="days row">{days}</div>;
     }
     renderCells(current_day) {      
-      const timeFormat = 'MM-dd kk:mm';
+      const timeFormat = 'MM-dd kk:mm eee';
       let minutes = 0;
       let time=[];      
       for(let i=0;i<17;i++){
@@ -93,6 +98,7 @@ class Calendar extends  React.Component{
       }
 
     renderClass = day =>{
+      //for isPast
       let dateFormate = `2020-${day.slice(0,2)}-${day.slice(3,5)}T${day.slice(6,8)}:${day.slice(9,11)}`;
       let stringClass = `calendar body cell `;
       if(day === this.state.selectedDate){
@@ -100,33 +106,63 @@ class Calendar extends  React.Component{
       }
 
       const reg = /[a-zA-Z]/g;
-      
+      //let fetchday becomes red
       this.state.fetchday.map(date =>{  
-        //console.log(date.Start)
-        if(day == date.Start.slice(6,date.Start.length-1).replace(reg," ")){
+        if(day.slice(0,11) == date.Start.slice(6,date.Start.length-1).replace(reg," ")){
           stringClass += ` selected`;
-        }
-        //PastTime
-        if(isPast(parseISO(dateFormate))){
-          stringClass = `calendar body cell unavailable`;
-        }
-      }
+        }       
+      }      
       )
-        
+
+      //PastTime
+      if(isPast(parseISO(dateFormate))){
+        stringClass = `calendar body cell unavailable`;
+      }
+
+      //supervisor Time
+      
+      const weekList = ['Mon','Tue','Wed','Thu','Fri'];
+      const weekListValue = {'Mon':0,'Tue':1,'Wed':2,'Thu':3,'Fri':4};
+
+      weekList.map(weekday => {
+      
+          if(day.slice(-3) === weekday){
+            //console.log(day.slice(-3))
+            
+            if(typeof this.state.supervisorTime['Start'] !== 'undefined'){
+              const number = weekListValue[weekday]
+              const startTime = this.state.supervisorTime['Start'][number];
+              const endTime = this.state.supervisorTime['End'][number];
+              //-------------------------------------------------------
+              //console.log(startTime)
+              const startFormat = new Date(2020, 2,10 ,startTime,0);
+              const endTimeFormat = new Date(2020, 2,10,endTime,0);
+              const currentFormat = new Date(2020, 2, 10 ,day.slice(6,8),0);
+              //console.log(isWithinInterval(currentFormat, { start: startFormat, end: endTimeFormat}));
+              if(!isWithinInterval(currentFormat, { start: startFormat, end: endTimeFormat})){
+                stringClass = `calendar body cell unavailable`
+              }
+            }
+          
+          }
+
+     });
+      
 
       return stringClass;
     }
     
 
     onDateClick = day => {
-      
-      let dateFormate = `2020-${day.slice(0,2)}-${day.slice(3,5)}T${day.slice(6,8)}:${day.slice(9,11)}`;
-      console.log(parseISO(dateFormate))
-      console.log(isPast(parseISO(dateFormate)))
+     
+      console.log(day)
+      console.log(day.slice(0,2))
+      // console.log(this.state.supervisorTime[`friday`])
+      // console.log(day.slice(6,8));
+     //if timeSlot is red, it will alert plz choose another day
      
       const className = document.getElementById(day).className;
-      console.log(className)
-      //if timeSlot is red, it will alert plz choose another day
+      
       if(className === "calendar body cell  selected" || className === `calendar body cell unavailable`){
         alert('Please choose another day');
         this.setState({selectedDate: ''});

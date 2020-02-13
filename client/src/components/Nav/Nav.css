@@ -1,0 +1,29 @@
+.nav{
+    position: absolute;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 4vh;
+    background:#F5F0E3;
+   
+}
+
+.nav-link{
+    width:20%;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+    list-style: none;
+}
+.NavTitle{
+    position: absolute;
+    left:0px;
+    top:0px;
+    min-height: 4vh;
+}
+
+a{
+    text-decoration:none;
+}
