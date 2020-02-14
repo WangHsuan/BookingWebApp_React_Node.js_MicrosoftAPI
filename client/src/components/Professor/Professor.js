@@ -87,6 +87,7 @@ class Professor extends React.Component{
             <div>
                 <Form className ='WeekStyle' onSubmit={this.handleSubmit}>
                 <h3>Manage Your Opening Time</h3>
+                <div>Manage Your Opening Time</div>
                 <FormGroup>
                     <Label for="Monday">Monday</Label>
                     <Input type="select" name="monday_start" >

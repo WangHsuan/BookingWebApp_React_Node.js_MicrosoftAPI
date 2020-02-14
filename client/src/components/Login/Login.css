@@ -4,18 +4,33 @@
     top: 100px;
     margin: 0 auto;
     width:500px;
-    height: 300px;
+    height: 450px;
     background:#f5f0e3;
+    border-radius: 5px;
 }
-
+.formTitle{
+    display:flex;
+    justify-content: center;
+    padding:20px;
+    font-size: 30px;
+    font-weight: bold;
+}
 .formGroup{
     padding:10px;
     text-align: center;
 }
 input{
     width:300px;
+    height: 50px;
+    border-radius: 5px;
+    border: 1px solid black;
 }
 button{
-    margin-left:40%;
+    
     font-size: 20px;
+    width:300px;
+    height: 50px;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 5px;
 }

@@ -5,37 +5,8 @@ const Bluebird = require('bluebird');
 fetch.Promise = Bluebird;
 require('dotenv/config');
 var bodyParser = require('body-parser')
-
-//firebase--------------------------
-var admin = require("firebase-admin");
-var serviceAccount = require("./bookingweb-7c118-firebase-adminsdk-w97ed-89b70c4481.json");
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://bookingweb-7c118.firebaseio.com"
-});
-//test
-var fireData = admin.database();
-//read
-fireData.ref('todos').once('value', function(snapshot){
-    //console.log(snapshot.val());
-})
-//write
-fireData.ref('todos').set({'title':'welcome to real world'})
-.then(fireData.ref('todos').once('value', function(snapshot){
-    //console.log(snapshot.val());
-}))
-
-//Seed
-
-// fireData.ref('businessTime').set({'monday':{Start:`09:00`,End:`17:00`},'tuesday':{Start:`09:00`,End:`17:00`},'wednesday':{Start:`09:00`,End:`17:00`},'thursday':{Start:`09:00`,End:`17:00`},'friday':{Start:`09:00`,End:`17:00`}})
-// .then( 
-//     fireData.ref('businessTime').once('value',function(snapshot){
-//       //console.log(snapshot.val());
-//     })
-//   )
-//update
-
-//-------------------------------------
+var fireData = require('../reactexpress/node_modules/connections/firebase_admin_connection');
+var firebaseLogin = require('./node_modules/connections/firebase_connect');
 
 // 增加 body 解析
 app.use(bodyParser.json());
@@ -57,7 +28,7 @@ const endDate = '2020-12-20T01:00:00';
 
 //Get Calendar Data From Microsoft and then allows React to fetch
 app.get('/api/getEvents',(req,res)=>{
-    console.log(process.env.OutlookAccountShort)
+    
     //fetch microsoft calendar events
     //outer fetch to get access token
     fetch(`https://login.microsoftonline.com/${OutlookAccountShort}/oauth2/token`,{
@@ -167,7 +138,6 @@ app.post('/api/postEvents',(req,res)=>{
 //Get Business Time From Supervisor-----------------
 app.post('/api/getBusinessTime',(req,res)=>{
     let business_time = req.body.business_time;
-    console.log(business_time )
     var businessTimeFormate ={'Mon':{Start:business_time['Start'][0],End:business_time['End'][0]},'Tue':{Start:business_time['Start'][1],End:business_time['End'][1]},'Wed':{Start:business_time['Start'][2],End:business_time['End'][2]},'Thr':{Start:business_time['Start'][3],End:business_time['End'][3]},'Fri':{Start:business_time['Start'][4],End:business_time['End'][4]}};
     
     fireData.ref('businessTime').set(business_time)
@@ -187,6 +157,25 @@ app.get('/api/Time',(req,res)=>{
     })
 
     })
+
+//register    
+app.post('/api/register', function(req,res){
+    const email = req.body.Email;
+    const password = req.body.Password;
+    var hsuan = {Email:'ro61019',Pwd:5678}
+    console.log(password)
+    
+    firebaseLogin.auth().createUserWithEmailAndPassword(email,password)
+    .then(function(user){
+        console.log(user);
+    })
+    .catch(function(err){
+        console.log(err);
+    })
+
+    var hsuan = {Email:'ro61019',Pwd:5678}
+    res.json(req.body)
+})    
 
 const port = 5000;
 
