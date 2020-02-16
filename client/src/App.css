@@ -125,7 +125,7 @@ main {
 
 div.days.row{
   margin:0 auto;
-  width:800px;
+  width:900px;
 }
 
 /* Calendar */
@@ -254,15 +254,23 @@ font-size: 20px;
 margin:5px;
 }
 .form-control{
-  padding-left:20%;
+  padding-left:10px;
 font-size: 20px;
 margin:5px;
 }
 .form{
   position: absolute;
   top:700px;
-  left:40%;
+  left:37%;
   width:30%;
   margin:0 auto;
 
+}
+.description{
+  width:300px;
+}
+.select{
+  height:40px;
+  font-size: 20px;
+  width:300px;
 }

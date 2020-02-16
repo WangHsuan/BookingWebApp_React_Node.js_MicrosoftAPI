@@ -162,19 +162,30 @@ app.get('/api/Time',(req,res)=>{
 app.post('/api/register', function(req,res){
     const email = req.body.Email;
     const password = req.body.Password;
-    var hsuan = {Email:'ro61019',Pwd:5678}
-    console.log(password)
+    let LoginStatus = false;
+    
+    
     
     firebaseLogin.auth().createUserWithEmailAndPassword(email,password)
     .then(function(user){
-        console.log(user);
+        //console.log(user);       
+        LoginStatus = true;
+        console.log(LoginStatus);
+             
     })
-    .catch(function(err){
-        console.log(err);
+    .catch(function(err){     
+        console.log(err);               
     })
-
-    var hsuan = {Email:'ro61019',Pwd:5678}
-    res.json(req.body)
+    .finally(()=>{
+        console.log(LoginStatus)
+        var Login = {Status:LoginStatus}
+        // console.log(Login) 
+        res.json(Login)
+    ;
+    }
+    )
+        
+ 
 })    
 
 const port = 5000;

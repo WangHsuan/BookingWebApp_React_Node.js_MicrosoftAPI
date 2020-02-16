@@ -251,7 +251,7 @@ class Calendar extends  React.Component{
           </FormGroup>
           <FormGroup>
           <Label className='selectTag'>Subject: </Label>
-          <select value={this.state.value} onChange={this.handleChange}>
+          <select className='select' value={this.state.value} onChange={this.handleChange}>
             <option value="IFN 701 Project">IFN 701 Project</option>
             <option value="IFN 680 AI">IFN 680 AI</option>
             <option value="IFN 647 Information Retrieveal">IFN 647 Information Retrieveal</option>
@@ -260,7 +260,7 @@ class Calendar extends  React.Component{
           
           <FormGroup>
             <Label for="exampleText">Description</Label>
-            <Input type="textarea" name="content" id="exampleText" />
+            <Input type="textarea" name="content" className='description' id="exampleText" />
           </FormGroup>
           <FormGroup>
           <Button >Submit</Button>

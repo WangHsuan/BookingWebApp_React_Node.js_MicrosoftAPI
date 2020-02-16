@@ -6,7 +6,7 @@
     width:500px;
     height: 450px;
     background:#f5f0e3;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 .formTitle{
     display:flex;
@@ -33,4 +33,11 @@ button{
     background-color: transparent;
     border: 1px solid black;
     border-radius: 5px;
+}
+.button{
+    margin-left: 20%;
+}
+
+.signup{
+    margin-left: 20%;
 }
