@@ -41,3 +41,9 @@ button{
 .signup{
     margin-left: 20%;
 }
+
+.err{
+    display:flex;
+    justify-content: center;
+    color:red;
+}

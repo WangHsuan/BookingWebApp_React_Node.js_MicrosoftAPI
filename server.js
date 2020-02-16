@@ -160,33 +160,53 @@ app.get('/api/Time',(req,res)=>{
 
 //register    
 app.post('/api/register', function(req,res){
-    const email = req.body.Email;
-    const password = req.body.Password;
-    let LoginStatus = false;
+        const email = req.body.Email;
+        const password = req.body.Password;
+        let LoginStatus = false;
+        let errorMessage = '';
     
+        //firebase create account   
+        firebaseLogin.auth().createUserWithEmailAndPassword(email,password)
+        .then(function(user){       
+            LoginStatus = true;               
+        })
+        .catch(function(err){
+            errorMessage = err.message;                   
+        })
+        .finally(()=>{
+            //console.log(errorMessage)
+            var Login = {Status:LoginStatus, Err: errorMessage}
+            console.log(Login)
+            res.json(Login);
+        }
+        )         
+    })   
     
-    
-    firebaseLogin.auth().createUserWithEmailAndPassword(email,password)
-    .then(function(user){
-        //console.log(user);       
-        LoginStatus = true;
-        console.log(LoginStatus);
-             
-    })
-    .catch(function(err){     
-        console.log(err);               
-    })
-    .finally(()=>{
-        console.log(LoginStatus)
-        var Login = {Status:LoginStatus}
-        // console.log(Login) 
-        res.json(Login)
-    ;
-    }
-    )
-        
- 
-})    
+    //Login
+    app.post('/api/login', function(req,res){
+        const email = req.body.Email;
+        const password = req.body.Password;
+        let LoginStatus = false;
+        let errorMessage = '';
+        console.log('server')
+        console.log(email)
+        //firebase log in  
+        firebaseLogin.auth().signInWithEmailAndPassword(email,password)
+        .then(function(user){       
+            LoginStatus = true;               
+        })
+        .catch(function(err){
+            errorMessage = err.message;                   
+        })
+        .finally(()=>{
+            //console.log(errorMessage)
+            var Login = {Status:LoginStatus, Err: errorMessage}
+            console.log(Login)
+            res.json(Login);
+        }
+        )         
+    })   
+
 
 const port = 5000;
 

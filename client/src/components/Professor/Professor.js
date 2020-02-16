@@ -86,8 +86,8 @@ class Professor extends React.Component{
         return(
             <div>
                 <Form className ='WeekStyle' onSubmit={this.handleSubmit}>
-                <h3>Manage Your Opening Time</h3>
-                <div>Manage Your Opening Time</div>
+                <h3 className='ProfessorTitle'>Manage Your Opening Time</h3>
+                
                 <FormGroup>
                     <Label for="Monday">Monday</Label>
                     <Input type="select" name="monday_start" >
@@ -137,7 +137,7 @@ class Professor extends React.Component{
                         {timeListVerse.map(time=><option key={`friday_end_${time}`}>{time}</option>)}  
                     </Input>
                     </FormGroup>
-                    <Button>Submit</Button>
+                    <Button className='ProfessorBtn'>Submit</Button>
                 </Form>
             </div>
         )
